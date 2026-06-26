@@ -1,0 +1,37 @@
+# LAMMPS Input File
+# Licensed under CC BY 4.0
+# A Set of Tutorials for the LAMMPS Simulation Package (LiveCoMS, 2025)
+# By Simon Gravelle, Cecilia M. S. Alvares, Jacob R. Gissinger, and Axel Kohlmeyer
+# Please cite doi.org/10.33011/livecoms.6.1.3037
+# Find more on GitHub: https://github.com/lammpstutorials
+
+# PART A - ENERGY MINIMIZATION
+# 1) Initialization
+units lj
+dimension 3
+atom_style atomic
+boundary p p p
+# 2) System definition
+region simbox block -20 20 -20 20 -20 20
+create_box 2 simbox
+create_atoms 1 random 100 34134 simbox overlap 0.3
+create_atoms 2 random 100 12756 simbox overlap 0.3
+# create_atoms 3 random 1 55000 simbox overlap 0.3
+# 3) Settings
+mass 1 1.0
+mass 2 5.0
+pair_style lj/cut 4.0
+pair_coeff 1 1 1.0 1.0
+pair_coeff 2 2 0.5 3.0
+# 4) Monitoring
+thermo 50
+thermo_style custom step etotal press
+# 5) Run
+minimize 1.0e−6 1.0e−6 1000 10000
+
+# PART B − MOLECULAR DYNAMICS
+# 4) Monitoring
+thermo 50
+thermo_style yaml
+
+run 100
