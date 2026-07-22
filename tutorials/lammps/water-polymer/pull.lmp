@@ -1,0 +1,46 @@
+# LAMMPS Input File
+# Licensed under CC BY 4.0
+# A Set of Tutorials for the LAMMPS Simulation Package (LiveCoMS, 2025)
+# By Simon Gravelle, Cecilia M. S. Alvares, Jacob R. Gissinger, and Axel Kohlmeyer
+# Please cite doi.org/10.33011/livecoms.6.1.3037
+# Find more on GitHub: https://github.com/lammpstutorials
+
+kspace_style pppm 1e-5
+read_restart merge.restart
+
+group ends type OAlc
+variable xcm equal xcm(ends,x)
+variable oxies atom type==label2type(atom,OAlc)
+variable end1 atom v_oxies*(x>v_xcm)
+variable end2 atom v_oxies*(x<v_xcm)
+group topull1 variable end1
+group topull2 variable end2
+
+dump viz all image 250 myimage−*.ppm type &
+type shiny 0.1 box no 0.01 &
+view 0 90 zoom 3.3 fsaa yes bond atom 0.8 size 1100 600
+dump_modify viz backcolor white &
+acolor OW red acolor HW white &
+acolor OE darkred acolor OAlc darkred &
+acolor C gray acolor CPos gray &
+acolor H white acolor HC white &
+adiam OW 0.2 adiam HW 0.2 &
+adiam C 2.8 adiam CPos 2.8 adiam OAlc 2.6 &
+adiam H 1.4 adiam HC 1.4 adiam OE 2.6
+
+timestep 1.0
+fix mynvt all nvt temp 300 300 100
+fix myrct PEG recenter 0 0 0 shift all
+
+compute rgyr PEG gyration
+compute dphi PEG dihedral/local phi
+
+thermo_style custom step temp etotal c_rgyr
+thermo 250
+dump mydmp all local 100 pull.dat index c_dphi
+
+run 15000
+
+fix myaf1 topull1 addforce 10 0 0
+fix myaf2 topull2 addforce −10 0 0
+run 15000
