@@ -1,0 +1,49 @@
+# LAMMPS Input File
+# Licensed under CC BY 4.0
+# A Set of Tutorials for the LAMMPS Simulation Package (LiveCoMS, 2025)
+# By Simon Gravelle, Cecilia M. S. Alvares, Jacob R. Gissinger, and Axel Kohlmeyer
+# Please cite doi.org/10.33011/livecoms.6.1.3037
+# Find more on GitHub: https://github.com/lammpstutorials
+
+units real
+atom_style full
+
+read_data deform-mod.data
+displace_atoms all move -12 0 0 # optional
+
+pair_style reaxff NULL safezone 3.0 mincap 150
+pair_coeff * * ffield.reax.CHOFe Si O H
+fix myqeq all qeq/reaxff 1 0.0 10.0 1.0e-6 reaxff maxiter 400
+
+group grpSi type Si
+group grpO type O
+group grpH type H
+variable qSi equal charge(grpSi)/count(grpSi)
+variable qO equal charge(grpO)/count(grpO)
+variable qH equal charge(grpH)/(count(grpH)+1e−10)
+
+thermo 5
+thermo_style custom step temp etotal press v_qSi v_qO v_qH
+
+dump viz all image 100 myimage−*.ppm q &
+type shiny 0.1 box no 0.01 view 180 90 zoom 2.3 size 1200 500
+dump_modify viz adiam Si 2.6 adiam O 2.3 adiam H 1.0 &
+backcolor white amap −1 2 ca 0.0 3 min royalblue &
+0 green max orangered
+
+fix myspec all reaxff/species 5 1 5 decorate.species &
+element Si O H
+
+fix mynvt all nvt temp 300.0 300.0 100
+timestep 0.5
+
+label loop
+variable a loop 10
+
+variable seed equal 35672+${a}
+create_atoms 3 random 2 ${seed} NULL overlap 2.6 maxtry 50
+
+run 2000
+
+next a
+jump SELF loop

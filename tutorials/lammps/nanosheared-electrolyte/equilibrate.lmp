@@ -21,6 +21,9 @@ include groups.inc
 
 fix myshk H2O shake 1.0e−5 200 0 b O−H a H−O−H kbond 2000
 
+# run 10000
+# write_data equilibrate.data nocoeff
+
 dump mydmp all image 1 myimage−*.ppm type type &
 shiny 0.1 box no 0.01 view 90 0 zoom 1.8
 dump_modify mydmp backcolor white &
@@ -55,7 +58,8 @@ variable wallbotz equal xcm(wallbot,z)
 variable deltaz equal v_walltopz−v_wallbotz
 
 thermo 250
-thermo_style custom step temp etotal press v_deltaz
+thermo_style custom step temp etotal press v
 
-run 10000
-write_data equilibrate.data nocoeff
+run 300000
+
+write_data equlibrate.data nocoeff

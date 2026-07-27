@@ -40,13 +40,6 @@ set type Cl− charge −1
 include parameters.inc
 include groups.inc
 
-pair_coeff O O 0.185199 3.1589
-pair_coeff H H 0.0 1.0
-pair_coeff Na+ Na+ 0.04690 2.4299
-pair_coeff Cl− Cl− 0.1500 4.04470
-pair_coeff WALL WALL 11.697 2.574
-pair_coeff O WALL 0.4 2.86645
-
 delete_atoms random fraction 0.15 yes H2O NULL 482793 mol yes
 
 dump mydmp all image 200 myimage−*.ppm type type &
