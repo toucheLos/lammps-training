@@ -54,10 +54,11 @@ velocity cnt_bot set 0 0 0
 variable Lcnt equal xcm(cnt_top,x)−xcm(cnt_bot,x)
 variable Fcnt equal f_mysf1[1]−f_mysf2[1]
 
-dump viz all image 500 myimage−*.ppm element type size &
-1000 400 zoom 6 shiny 0.3 fsaa yes bond atom 0.8 &
-view 0 90 box no 0.0 axes no 0.0 0.0
-dump_modify viz pad 9 backcolor white adiam 1 0.85 bdiam 1 1.0
+dump 1 all custom 100 traj.lammpstrj id type x y z
+#dump viz all image 500 myimage−*.ppm element type size &
+#1000 400 zoom 6 shiny 0.3 fsaa yes bond atom 0.8 &
+#view 0 90 box no 0.0 axes no 0.0 0.0
+#dump_modify viz pad 9 backcolor white adiam 1 0.85 bdiam 1 1.0
 
 compute Tmid cnt_mid temp
 thermo 100
